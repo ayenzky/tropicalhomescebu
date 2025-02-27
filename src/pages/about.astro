@@ -1,0 +1,46 @@
+---
+
+import Layout from '../layouts/Layout.astro';
+import PropertyListing from '../components/PropertyListing.astro';
+
+const ogData = {
+  title: `All Properties | Tropical Homes Cebu`,
+  description: `Explore our complete collection of properties available for sale and rent in Cebu, Philippines.`,
+  image: `https://tropicalhomescebu.com/images/tropical-homes-cebu-logo.png`,
+  url: `https://tropicalhomescebu.com/properties`,
+  type: 'website',
+};
+---
+
+<Layout ogData={ogData}>
+  
+  <main>
+    <div class="py-8 mt-16">
+      <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold text-center mb-2">About Us</h1>
+        <p class="text-gray-600 text-center text-lg dark:text-gray-400 w-1/2 mx-auto">
+          Tropical Homes Cebu is a real estate company that specializes in selling and renting properties in Cebu, Philippines.
+        </p>
+      </div>
+    </div>
+    
+    <div class="container mx-auto px-4 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="space-y-6">
+          <h2 class="text-2xl font-bold mb-4">Our Mission</h2>
+          <p class="text-gray-600 dark:text-gray-400">
+            Our mission is to provide personalized real estate services, placing our clients' needs at the forefront, while maintaining the highest standards of integrity, professionalism and transparency.
+          </p>
+          
+        </div>
+        <div class="space-y-6">
+          <h2 class="text-2xl font-bold mb-4">Our Vision</h2>
+          <p class="text-gray-600 dark:text-gray-400">
+            We envision a future where every clients real estate journey is a seamless, stress free experience guided by our commitment to unparalleled service, trust and satisfaction.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+</Layout> 

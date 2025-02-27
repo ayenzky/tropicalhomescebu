@@ -100,26 +100,28 @@ const { showAllProperties = false, showTitle = true } = Astro.props;
 </section>
 
 <style>
+  
   .tab-btn.active {
     background-color: #007bff;
     color: white;
   }
   
   .tab-btn:not(.active) {
-    color: rgb(75 85 99);
+    color: rgb(0, 0, 0);
   }
   
   .tab-btn:hover:not(.active) {
-    background-color: rgba(0, 123, 255, 0.348);
+    background-color: #007bff;
     border-color: #007bff;
+    color: #fff;
   }
   @media (prefers-color-scheme: dark) {
     .tab-btn:not(.active) {
-      color: #dddddd;
+      color: #000;
     }
     
     .tab-btn:hover:not(.active) {
-      background-color: rgba(16, 185, 129, 0.1);
+      background-color: #007bff;
     }
   }
 </style>
