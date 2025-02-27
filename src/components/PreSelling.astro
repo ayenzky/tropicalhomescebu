@@ -1,0 +1,106 @@
+---
+// Import any necessary utilities or interfaces
+// import { useState } from "react";
+// const [dynamicProperties, setDynamicProperties] = useState<Property[]>([]);
+
+interface Property {
+  id: number;
+  title: string;
+  price: number;
+  location: string;
+  image: string;
+  completion: string;
+}
+
+// Sample pre-selling properties data with Unsplash images
+let properties: Property[] = [
+  {
+    id: 1,
+    title: "Modern Horizon Residences",
+    price: 250000,
+    location: "Downtown Area",
+    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&auto=format&fit=crop",
+    completion: "Q4 2024"
+  },
+  {
+    id: 2,
+    title: "Skyline Tower",
+    price: 180000,
+    location: "Business District",
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop",
+    completion: "Q2 2025"
+  },
+  {
+    id: 3,
+    title: "Green Valley Condos",
+    price: 320000,
+    location: "Suburban Area",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop",
+    completion: "Q1 2025"
+  }
+];
+
+---
+
+<section class="py-20 bg-white dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-gray-100 mb-8">Pre-Selling Properties</h2>
+    <p class="text-gray-600 text-lg text-center mb-8 dark:text-gray-400">
+      Discover our latest pre-selling properties available for sale and rent
+    </p>
+    <div class="flex justify-end mb-6">
+      <select id="priceSort" class="px-4 py-2 border rounded-lg shadow-sm dark:text-gray-100 dark:bg-gray-800">
+        <option value="default">Default Sort</option>
+        <option value="asc">Price: Low to High</option>
+        <option value="desc">Price: High to Low</option>
+      </select>
+    </div>
+
+    <div id="propertyGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {properties.map(property => (
+        <div class="bg-white rounded-lg shadow-md overflow-hidden" data-price={property.price}>
+          <img src={property.image} alt={property.title} class="w-full h-48 object-cover"/>
+          <div class="p-6">
+            <h3 class="text-xl font-semibold mb-2 text-gray-900">{property.title}</h3>
+            <p class="text-gray-600 mb-2">{property.location}</p>
+            <p class="text-primary font-bold mb-2">${property.price.toLocaleString()}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Estimated Completion: {property.completion}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const propertyGrid = document.getElementById('propertyGrid');
+  const priceSort = document.getElementById('priceSort') as HTMLSelectElement;
+
+  function sortProperties() {
+    if (!propertyGrid) return;
+
+    const properties = Array.from(propertyGrid.children);
+    const sortDirection = priceSort.value;
+
+    if (sortDirection === 'default') {
+      // Reload the page to restore default order
+      window.location.reload();
+      return;
+    }
+
+    properties.sort((a, b) => {
+      const priceA = Number(a.getAttribute('data-price')) || 0;
+      const priceB = Number(b.getAttribute('data-price')) || 0;
+      
+      return sortDirection === 'asc' ? priceA - priceB : priceB - priceA;
+    });
+
+    // Clear and re-append sorted properties
+    properties.forEach(property => {
+      propertyGrid.appendChild(property);
+    });
+  }
+
+  // Initialize sorting functionality
+  priceSort?.addEventListener('change', sortProperties);
+</script> 

@@ -9,6 +9,24 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.3.1"
+    "@astrojs/netlify": "^6.2.1",
+    "@astrojs/react": "^4.2.0",
+    "@astrojs/tailwind": "^6.0.0",
+    "@sanity/astro": "^3.2.5",
+    "@sanity/client": "^6.28.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "astro": "^5.3.1",
+    "nodemailer": "^6.10.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-is": "^19.0.0",
+    "sanity": "^3.77.2",
+    "styled-components": "^6.1.15",
+    "tailwindcss": "^3.4.17"
+  },
+  "packageManager": "yarn@3.2.3+sha512.f26f951f67de0c6a33ee381e5ff364709c87e70eb5e65c694e4facde3512f1fa80b8679e6ba31ce7d340fbb46f08dd683af9457e240f25a204be7427940d767e",
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.17"
   }
 }

@@ -1,11 +1,61 @@
 ---
-import Welcome from '../components/Welcome.astro';
+
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import PropertyTypes from '../components/PropertyTypes.astro';
+import PropertyListing from '../components/PropertyListing.astro';
+import PreSelling from '../components/PreSelling.astro';
+import ContactAgent from '../components/ContactAgent.astro';
+import Footer from '../components/Footer.astro';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const ogData = {
+  title: `Tropical Homes Cebu`,
+  description: `Tropical Homes Cebu is a real estate company that specializes in selling and renting properties in Cebu, Philippines.`,
+  image: `https://tropicalhomescebu.com/images/tropical-homes-cebu-logo.png`,
+  url: `https://tropicalhomescebu.com`,
+  type: 'website',
+};
 ---
 
-<Layout>
-	<Welcome />
+<Layout ogData={ogData}>
+	
+	<main>
+		<Hero />
+		<PropertyTypes />
+		<PropertyListing />
+		<PreSelling />
+		<ContactAgent />
+	</main>
+	
+
+	<!-- Messenger Chat Plugin Code -->
+	<div id="fb-root"></div>
+	<div id="fb-customer-chat" class="fb-customerchat"></div>
+
+	<script is:inline>
+		var chatbox = document.getElementById('fb-customer-chat');
+		if (chatbox) {
+			chatbox.setAttribute("page_id", "187809426184466");
+			chatbox.setAttribute("attribution", "biz_inbox");
+		}
+
+		window.fbAsyncInit = function() {
+			FB.init({
+				xfbml: true,
+				version: 'v18.0'
+			});
+		};
+
+		(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s);
+			js.id = id;
+			js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js#xfbml=1&version=v18.0';
+			fjs.parentNode?.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+	</script>
 </Layout>

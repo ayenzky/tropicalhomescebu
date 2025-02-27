@@ -1,0 +1,312 @@
+---
+
+
+import Layout from '../../layouts/Layout.astro';
+import { properties, type Property } from '../../data/properties';
+
+export function getStaticPaths() {
+  return properties.map((property) => ({
+    params: { slug: property.slug },
+    props: { property },
+  }));
+}
+
+const { property } = Astro.props;
+
+
+
+// Prepare Open Graph data for social sharing
+const ogData = {
+  title: `${property.title} | Tropical Homes Cebu`,
+  description: property.description,
+  image: property.image,
+  url: `https://tropicalhomescebu.com/property/${property.slug}`,
+  type: 'website',
+};
+---
+
+<Layout ogData={ogData}>
+    
+
+  <main class="container mx-auto px-4 py-16 mt-16">
+    <div class="flex justify-between items-center lg:flex-row flex-col mb-8 gap-4">
+      <h1 class="text-3xl text-center lg:text-left font-bold">{property.title}</h1>
+      
+      <!-- Social Sharing Buttons -->
+      <div class="flex gap-3 items-center">
+        <button id="shareFacebook" class="bg-[#1877F2] text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#1877F2]/90 transition-colors">
+          <i class="fab fa-facebook-f"></i>
+        </button>
+        <button id="shareTwitter" class="bg-[#1DA1F2] text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#1DA1F2]/90 transition-colors">
+          <i class="fab fa-twitter"></i>
+        </button>
+        <button id="shareWhatsapp" class="bg-[#25D366] text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#25D366]/90 transition-colors">
+          <i class="fab fa-whatsapp"></i>
+        </button>
+        <button id="copyLink" class="bg-gray-600 text-white w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-700 transition-colors">
+          <i class="fas fa-link"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 gap-8">
+      <!-- Main Image and Gallery -->
+      <div class="space-y-4">
+        <div class="relative">
+          <img 
+            id="mainImage"
+            src={property.image}
+            alt={property.title}
+            class="w-full h-[500px] object-cover rounded-lg"
+            onerror="this.src='https://placehold.co/600x400/e2e8f0/1e293b.png?text=No+Image'"
+          />
+          <span class={`absolute top-4 left-4 ${property.type === 'sale' ? 'bg-primary' : 'bg-primary'} text-white px-3 py-1 rounded text-sm font-medium`}>
+            {property.type === 'sale' ? 'For Sale' : 'For Rent'}
+          </span>
+        </div>
+        
+        <!-- Image Gallery -->
+        <div class="grid grid-cols-4 gap-4" id="thumbnailGallery">
+          <div class="thumbnail-container active">
+            <img 
+              src={property.image}
+              alt="Main property image"
+              class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity thumbnail"
+              onerror="this.src='https://placehold.co/600x400/e2e8f0/1e293b.png?text=No+Image'"
+            />
+          </div>
+          {property.galleryImages.map((image) => (
+            <div class="thumbnail-container">
+              <img 
+                src={image}
+                alt="Property gallery image"
+                class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity thumbnail"
+                onerror="this.src='https://placehold.co/600x400/e2e8f0/1e293b.png?text=No+Image'"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Property Details -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div>
+          
+          <p class="text-primary text-2xl font-bold my-4">{property.displayPrice}</p>
+          <p class="text-gray-600 mb-6 flex items-center gap-2 dark:text-gray-400">
+            <i class="fas fa-map-marker-alt"></i> {property.location}
+          </p>
+
+          <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-800">
+              <i class="fas fa-bed text-primary/50 dark:text-primary text-xl mb-2"></i>
+              <p class="text-gray-600 dark:text-gray-300">{property.beds} Beds</p>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-800">
+              <i class="fas fa-bath text-primary/50 dark:text-primary text-xl mb-2"></i>
+              <p class="text-gray-600 dark:text-gray-300">{property.baths} Baths</p>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg dark:bg-gray-800">
+              <i class="fas fa-ruler-combined text-primary/50 dark:text-primary text-xl mb-2"></i>
+              <p class="text-gray-600 dark:text-gray-300">{property.sqft} Sqft</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-bold mb-4">Description</h2>
+          <p class="text-gray-600 mb-8 dark:text-gray-400">{property.description}</p>
+
+          <h2 class="text-xl font-bold mb-4">Features</h2>
+          <ul class="grid grid-cols-2 gap-4 mb-8">
+            {property.features.map((feature) => (
+              <li class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <i class="fas fa-check text-primary"></i> {feature}
+              </li>
+            ))}
+          </ul>
+
+          <button class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors w-full">
+            Contact Agent
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Disqus Comments Section -->
+    <!-- <div class="mt-16">
+      <h2 class="text-2xl font-bold mb-8">Comments</h2>
+      <div id="disqus_thread" class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6"></div>
+    </div> -->
+  </main>
+  
+</Layout>
+
+<style>
+  .thumbnail-container {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .thumbnail-container.active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 3px solid #007bff; /* emerald-500 */
+    border-radius: 0.5rem;
+    pointer-events: none;
+  }
+  
+  /* Toast notification style */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .toast.show {
+    opacity: 1;
+  }
+</style>
+
+<script define:vars={{ property }} type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    "name": property.title,
+    "description": property.description.replace(/"/g, '\\"'),
+    "image": property.image,
+    "url": `https://tropicalhomescebu.com/property/${property.slug}`,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": property.location
+    },
+    "numberOfRooms": property.beds,
+    "numberOfBathroomsTotal": property.baths,
+    "floorSize": {
+      "@type": "QuantitativeValue",
+      "value": property.sqft,
+      "unitCode": "SQFT"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": property.price,
+      "priceCurrency": "PHP"
+    }
+  }
+</script>
+
+<script>
+  function initializeGallery() {
+    const mainImage = document.getElementById('mainImage');
+    const thumbnailContainers = document.querySelectorAll('.thumbnail-container');
+
+    thumbnailContainers.forEach(container => {
+      container.addEventListener('click', () => {
+        // Update main image
+        const thumbnailImg = container.querySelector('.thumbnail');
+        if (mainImage && thumbnailImg) {
+          (mainImage as HTMLImageElement).src = (thumbnailImg as HTMLImageElement).src;
+        }
+
+        // Update active state
+        thumbnailContainers.forEach(c => c.classList.remove('active'));
+        container.classList.add('active');
+      });
+    });
+  }
+  
+  // Social sharing functionality
+  function initializeSocialSharing() {
+    const pageUrl = encodeURIComponent(window.location.href);
+    const pageTitle = encodeURIComponent(document.title);
+    
+    // Facebook share
+    const shareFacebookBtn = document.getElementById('shareFacebook');
+    if (shareFacebookBtn) {
+      shareFacebookBtn.addEventListener('click', () => {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`, 'facebook-share-dialog', 'width=800,height=600');
+      });
+    }
+    
+    // Twitter share
+    const shareTwitterBtn = document.getElementById('shareTwitter');
+    if (shareTwitterBtn) {
+      shareTwitterBtn.addEventListener('click', () => {
+        window.open(`https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`, 'twitter-share-dialog', 'width=800,height=600');
+      });
+    }
+    
+    // WhatsApp share
+    const shareWhatsappBtn = document.getElementById('shareWhatsapp');
+    if (shareWhatsappBtn) {
+      shareWhatsappBtn.addEventListener('click', () => {
+        window.open(`https://api.whatsapp.com/send?text=${pageTitle} ${pageUrl}`, '_blank');
+      });
+    }
+    
+    // Copy link
+    const copyLinkBtn = document.getElementById('copyLink');
+    if (copyLinkBtn) {
+      copyLinkBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          showToast('Link copied to clipboard!');
+        }).catch(err => {
+          console.error('Could not copy text: ', err);
+        });
+      });
+    }
+  }
+  
+  // Toast notification function
+  function showToast(message: string, duration = 3000) {
+    // Create toast element if it doesn't exist
+    let toast = document.querySelector('.toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.className = 'toast';
+      document.body.appendChild(toast);
+    }
+    
+    // Set message and show toast
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    // Hide toast after duration
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, duration);
+  }
+
+  // Add Disqus Script
+  // function loadDisqus() {
+  //   const disqusConfig = function (this: any) {
+  //     // Replace PAGE_URL with your page's canonical URL variable
+  //     this.page.url = window.location.href;
+  //     // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+  //     this.page.identifier = window.location.pathname;
+  //   };
+
+  //   (function() {
+  //     const d = document, s = d.createElement('script');
+  //     s.src = 'https://tropical-homes-cebu.disqus.com/embed.js'; // Replace YOUR_SHORTNAME with your Disqus shortname
+  //     s.setAttribute('data-timestamp', new Date().getTime().toString());
+  //     (d.head || d.body).appendChild(s);
+  //   })();
+  // }
+
+  // Initialize all functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    initializeGallery();
+    initializeSocialSharing();
+    // loadDisqus();
+  });
+</script> 

@@ -1,22 +1,102 @@
+---
+interface Props {
+	ogData?: any; // Allow passing arbitrary head content
+}
+
+import {VisualEditing} from '@sanity/astro/visual-editing'
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+// Import Tailwind CSS
+import '../styles/global.css';
+
+const {
+	ogData
+} = Astro.props;
+
+const visualEditingEnabled =
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED == "true";
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
+		<meta name="description" content={ogData?.description} />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{ogData?.title}</title>
+
+		<link rel="canonical" href={ogData?.url} />
+		
+		<!-- Open Graph / Social Media Meta Tags -->
+		{ogData?.image && <meta property="og:image" content={ogData?.image} />}
+		<meta property="og:title" content={ogData?.title} />
+		<meta property="og:description" content={ogData?.description} />
+		<meta property="og:type" content="website" />
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+		<!-- Google Font - Montserrat -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		
+		<!-- Dynamic head content from page -->
+		
+		<meta property="og:url" content={ogData?.url} />
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={ogData?.url} />
+		<meta property="twitter:title" content={ogData?.title} />
+		<meta property="twitter:description" content={ogData?.description} />
+		<meta property="twitter:image" content={ogData?.image} />
 	</head>
-	<body>
+	<body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+		<!-- <VisualEditing enabled={visualEditingEnabled} zIndex={1000} /> -->
+		<Header />
 		<slot />
+		<Footer />
 	</body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
+
+
+<script>
+	// Move theme initialization to Layout to ensure it runs before any page content
+	function initTheme() {
+		if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+			document.documentElement.classList.add('dark');
+		} else {
+			document.documentElement.classList.remove('dark');
+		}
+	}
+
+	// Run on initial page load
+	initTheme();
+
+	// Re-run on view transitions
+	document.addEventListener('astro:after-swap', initTheme);
+</script>
+
+<style is:global>
+	/* Add any global styles here */
+	:root {
+		--background: #ffffff;
+		--text: #111827;
+		--font-family: 'Montserrat', sans-serif;
+	}
+
+	:root.dark {
+		--background: #111827;
+		--text: #ffffff;
+	}
+
+	/* Apply font family to all elements */
+	html, body {
+		font-family: var(--font-family);
+	}
+
+	/* Add smooth transitions for theme changes */
+	* {
+		transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 	}
 </style>

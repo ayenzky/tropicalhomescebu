@@ -1,0 +1,31 @@
+---
+const propertyTypes = [
+  { icon: "fa-building", name: "Apartment", count: "123 Properties" },
+  { icon: "fa-house-chimney", name: "Villa", count: "84 Properties" },
+  { icon: "fa-home", name: "Home", count: "340 Properties" },
+  { icon: "fa-city", name: "Office", count: "65 Properties" },
+  { icon: "fa-building-columns", name: "Building", count: "39 Properties" },
+  { icon: "fa-house", name: "Townhouse", count: "145 Properties" },
+  { icon: "fa-landmark", name: "Castle", count: "29 Properties" },
+  { icon: "fa-warehouse", name: "Garage", count: "50 Properties" },
+];
+---
+<section class="py-8 md:py-12 bg-gray-50 dark:bg-gray-800">
+  <div class="container mx-auto px-4 py-8 md:py-12">
+    <h2 class="text-3xl md:text-4xl text-center font-bold text-gray-900 dark:text-gray-100 mb-4 md:mb-8">Property Types</h2>
+    <p class="text-gray-600 text-center text-base md:text-lg mb-8 md:mb-12 dark:text-gray-400">
+      Explore our wide range of properties across different categories
+    </p>
+  
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+    {propertyTypes.map(type => (
+      <div class="bg-white dark:bg-gray-700 p-4 md:p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-center">
+        <div class="text-3xl md:text-4xl mb-3 md:mb-4 text-primary dark:text-primary">
+          <i class={`fas ${type.icon}`}></i>
+        </div>
+        <h3 class="font-semibold mb-1 md:mb-2 text-gray-900 dark:text-gray-100">{type.name}</h3>
+        <p class="text-gray-600 dark:text-gray-400">{type.count}</p>
+      </div>
+    ))}
+  </div>
+</section> 

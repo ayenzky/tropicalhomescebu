@@ -1,0 +1,188 @@
+---
+import { properties, type Property } from '../data/properties';
+
+interface Props {
+  showAllProperties?: boolean;
+  showTitle?: boolean;
+}
+
+const { showAllProperties = false, showTitle = true } = Astro.props;
+
+---
+
+<section class="container mx-auto px-4 py-20">
+  {showTitle && (
+  <h2 class="text-4xl font-bold text-center mb-2">Property Listing</h2>
+  <p class="text-gray-600 text-lg text-center mb-8 dark:text-gray-400">
+    Browse our latest properties available for sale and rent
+  </p>
+  )}
+
+  <!-- Replace the separate Tab Filter and Sort Dropdown sections with: -->
+  <div class="flex justify-between lg:flex-row flex-col items-center gap-4 mb-8">
+    <div class="inline-flex rounded-lg border border-gray-200 w-full lg:w-auto p-1">
+      <button
+        class="tab-btn px-4 py-2 rounded-lg text-sm font-medium active"
+        data-type="all"
+      >
+        All
+      </button>
+      <button
+        class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+        data-type="sale"
+      >
+        For Sale
+      </button>
+      <button
+        class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+        data-type="rent"
+      >
+        For Rent
+      </button>
+    </div>
+
+    <select id="sort-select" class="px-4 py-3 rounded-lg border border-gray-200 text-sm font-medium dark:text-gray-100 dark:bg-gray-800 w-full lg:w-auto">
+      <option value="default">Default Sort</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+    </select>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {(showAllProperties ? properties : properties.slice(0, 6)).map(property => (
+        <div class="property-card bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow" data-type={property.type} data-price={property.price}>
+          <a href={`/property/${property?.slug}`} class="block">
+          <div class="relative">
+            
+            <img 
+              src={property.image}
+              alt={property.title}
+              class="w-full h-[240px] object-cover"
+              onerror="this.src='https://placehold.co/600x400/e2e8f0/1e293b.png?text=No+Image'"
+            />
+            <span class={`absolute top-4 left-4 ${property.type === 'sale' ? 'bg-primary' : 'bg-primary'} text-white px-3 py-1 rounded text-sm font-medium`}>
+              {property.type === 'sale' ? 'For Sell' : 'For Rent'}
+            </span>
+            <span class="absolute bottom-4 left-4 bg-white px-3 py-1 rounded text-sm font-medium text-gray-800">
+              {property.propertyType}
+            </span>
+          </div>
+          <div class="p-4">
+            <div class="text-primary font-bold text-xl mb-2">{property.displayPrice}</div>
+            <h3 class="text-lg font-semibold mb-2 text-gray-900">{property.title}</h3>
+            <p class="text-gray-600 text-sm mb-4 flex items-center gap-1">
+              <i class="fas fa-map-marker-alt"></i> {property.location}
+            </p>
+            <div class="flex justify-between text-gray-600 text-sm">
+              <span class="flex items-center gap-1">
+                <i class="fas fa-ruler-combined"></i> {property.sqft} Sqft
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="fas fa-bed"></i> {property.beds} Bed
+              </span>
+              <span class="flex items-center gap-1">
+                <i class="fas fa-bath"></i> {property.baths} Bath
+              </span>
+            </div>
+          </div>
+        </div>
+      </a>
+    ))}
+  </div>
+
+  {!showAllProperties && (
+  <div class="text-center mt-8">
+    <a href="/properties" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors inline-block">
+      Browse More Property
+    </a>
+  </div>
+  )}
+</section>
+
+<style>
+  .tab-btn.active {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .tab-btn:not(.active) {
+    color: rgb(75 85 99);
+  }
+  
+  .tab-btn:hover:not(.active) {
+    background-color: rgba(0, 123, 255, 0.348);
+    border-color: #007bff;
+  }
+  @media (prefers-color-scheme: dark) {
+    .tab-btn:not(.active) {
+      color: #dddddd;
+    }
+    
+    .tab-btn:hover:not(.active) {
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+  }
+</style>
+
+<script>
+  interface PropertyCard extends HTMLElement {
+    dataset: {
+      type: string;
+      price: string;
+    };
+    style: CSSStyleDeclaration;
+  }
+
+  function initializePropertyFilter() {
+    const tabButtons = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
+    const propertyCards = document.querySelectorAll<PropertyCard>('.property-card');
+    const sortSelect = document.querySelector<HTMLSelectElement>('#sort-select');
+
+    function filterProperties(type: string) {
+      propertyCards.forEach(card => {
+        if (type === 'all' || card.dataset.type === type) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function sortProperties(sortType: string) {
+      const cardsArray = Array.from(propertyCards);
+      const container = cardsArray[0].parentElement;
+      
+      if (!container) return;
+
+      cardsArray.sort((a, b) => {
+        const priceA = parseInt(a.dataset.price || '0');
+        const priceB = parseInt(b.dataset.price || '0');
+        
+        if (sortType === 'price-asc') {
+          return priceA - priceB;
+        } else if (sortType === 'price-desc') {
+          return priceB - priceA;
+        }
+        return 0;
+      });
+
+      cardsArray.forEach(card => container.appendChild(card));
+    }
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        filterProperties(button.dataset.type || 'all');
+      });
+    });
+
+    sortSelect?.addEventListener('change', (e) => {
+      const target = e.target as HTMLSelectElement;
+      sortProperties(target.value);
+    });
+  }
+
+  // Initialize the filter functionality
+  initializePropertyFilter();
+</script> 
