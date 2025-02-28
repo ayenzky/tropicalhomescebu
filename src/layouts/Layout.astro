@@ -6,6 +6,7 @@ interface Props {
 import {VisualEditing} from '@sanity/astro/visual-editing'
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import PWA from '../components/PWA.astro';
 // Import Tailwind CSS
 import '../styles/global.css';
 
@@ -49,12 +50,15 @@ const visualEditingEnabled =
 		<meta property="twitter:title" content={ogData?.title} />
 		<meta property="twitter:description" content={ogData?.description} />
 		<meta property="twitter:image" content={ogData?.image} />
+		<meta name="theme-color" content="#ffffff" />
+		<link rel="manifest" href="/manifest.webmanifest" />
 	</head>
 	<body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 		<!-- <VisualEditing enabled={visualEditingEnabled} zIndex={1000} /> -->
 		<Header />
 		<slot />
 		<Footer />
+		<PWA />
 	</body>
 </html>
 

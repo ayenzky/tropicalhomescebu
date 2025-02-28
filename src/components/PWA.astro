@@ -1,0 +1,79 @@
+<script>
+  // Check if service worker is supported
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }
+
+  // Add PWA install prompt
+  let deferredPrompt: any = undefined;
+  const installButton = document.getElementById('install-button');
+  
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later
+    deferredPrompt = e;
+    // Update UI to notify the user they can add to home screen
+    if (installButton) {
+      installButton.style.display = 'block';
+    }
+  });
+
+  if (installButton) {
+    installButton.addEventListener('click', (e) => {
+      // Hide our user interface that shows our install button
+      if (installButton) {
+        installButton.style.display = 'none';
+      }
+      // Show the install prompt
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+          } else {
+            console.log('User dismissed the install prompt');
+          }
+          deferredPrompt = null;
+        });
+      }
+    });
+  }
+
+  // Hide the install button when the app is already installed
+  window.addEventListener('appinstalled', () => {
+    if (installButton) {
+      installButton.style.display = 'none';
+    }
+    console.log('PWA was installed');
+  });
+</script>
+
+<button id="install-button" style="display: none;" class="pwa-install-button">
+  Install App
+</button>
+
+<style>
+  .pwa-install-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  }
+</style>
